@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Species Identification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-light: #81C784;
+            --primary-dark: #388E3C;
+            --secondary: #FFC107;
+            --text-dark: #263238;
+            --text-light: #607D8B;
+            --white: #FFFFFF;
+            --light-bg: #F5F5F5;
+            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 2rem;
+            --radius: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        h1 {
+            color: var(--primary-dark);
+            margin-bottom: var(--spacing-sm);
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+        
+        .upload-section {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+        
+        .upload-box {
+            border: 2px dashed var(--primary-light);
+            border-radius: var(--radius);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        .upload-box:hover {
+            border-color: var(--primary);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .upload-text {
+            color: var(--text-light);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        #imagePreview {
+            max-width: 300px;
+            max-height: 300px;
+            margin: var(--spacing-md) auto;
+            display: none;
+            border-radius: var(--radius);
+        }
+        
+        .button {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .button:disabled {
+            background-color: var(--text-light);
+            cursor: not-allowed;
+        }
+        
+        .results-section {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            padding: var(--spacing-lg);
+            display: none;
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .plant-name {
+            color: var(--primary-dark);
+            font-size: 2rem;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .confidence {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .plant-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .detail-card {
+            background-color: var(--light-bg);
+            border-radius: var(--radius);
+            padding: var(--spacing-md);
+        }
+        
+        .detail-title {
+            color: var(--primary-dark);
+            margin-bottom: var(--spacing-sm);
+            font-size: 1.2rem;
+        }
+        
+        .detail-value {
+            color: var(--text-dark);
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Plant Species Identification</h1>
+            <p class="subtitle">Upload a leaf image to identify plant species and get detailed information</p>
+        </header>
+        
+        <div class="upload-section">
+            <h2>Upload Image</h2>
+            <input type="file" id="imageInput" accept="image/*" hidden>
+            <div class="upload-box" id="dropArea" onclick="document.getElementById('imageInput').click()">
+                <div class="upload-icon">📷</div>
+                <p class="upload-text">Click to upload or drag and drop</p>
+                <p class="upload-text">Supports: JPG, PNG, JPEG</p>
+            </div>
+            <img id="imagePreview" src="#" alt="Preview">
+            <button id="identifyBtn" class="button" disabled>Identify Plant</button>
+        </div>
+        
+        <div class="loading" id="loadingSection">
+            <div class="spinner"></div>
+            <p>Analyzing your plant image...</p>
+        </div>
+        
+        <div class="results-section" id="resultsSection">
+            <div class="result-header">
+                <h2 class="plant-name" id="plantName">Plant Name</h2>
+                <p class="confidence" id="confidenceLevel">Confidence: 95%</p>
+            </div>
+            
+            <div class="plant-details" id="plantDetails">
+                <!-- Plant details will be inserted here -->
+            </div>
+            
+            <a href="/" class="back-link">← Back to Home</a>
+        </div>
+    </div>
+    
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const identifyBtn = document.getElementById('identifyBtn');
+        const loadingSection = document.getElementById('loadingSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const plantName = document.getElementById('plantName');
+        const confidenceLevel = document.getElementById('confidenceLevel');
+        const plantDetails = document.getElementById('plantDetails');
+        const dropArea = document.getElementById('dropArea');
+        
+        // Handle file selection
+        imageInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    identifyBtn.disabled = false;
+                }
+                
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+        
+        // Handle drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropArea.style.borderColor = 'var(--primary-dark)';
+        }
+        
+        function unhighlight() {
+            dropArea.style.borderColor = 'var(--primary-light)';
+        }
+        
+        dropArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files && files[0]) {
+                imageInput.files = files;
+                const event = new Event('change');
+                imageInput.dispatchEvent(event);
+            }
+        }
+        
+        // Handle identify button click
+        identifyBtn.addEventListener('click', identifyPlant);
+        
+        function identifyPlant() {
+            if (!imageInput.files || !imageInput.files[0]) return;
+            
+            // Show loading
+            loadingSection.style.display = 'block';
+            resultsSection.style.display = 'none';
+            
+            const formData = new FormData();
+            formData.append('image', imageInput.files[0]);
+            
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading
+                loadingSection.style.display = 'none';
+                
+                // Show results
+                plantName.textContent = data.prediction;
+                confidenceLevel.textContent = `Confidence: ${data.confidence}`;
+                
+                // Clear previous details
+                plantDetails.innerHTML = '';
+                
+                // Add plant details
+                const details = data.details;
+                for (const key in details) {
+                    if (key !== 'Scientific Name') {
+                        const detailCard = document.createElement('div');
+                        detailCard.className = 'detail-card';
+                        
+                        const detailTitle = document.createElement('h3');
+                        detailTitle.className = 'detail-title';
+                        detailTitle.textContent = key;
+                        
+                        const detailValue = document.createElement('p');
+                        detailValue.className = 'detail-value';
+                        detailValue.textContent = details[key];
+                        
+                        detailCard.appendChild(detailTitle);
+                        detailCard.appendChild(detailValue);
+                        
+                        plantDetails.appendChild(detailCard);
+                    }
+                }
+                
+                resultsSection.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loadingSection.style.display = 'none';
+                alert('An error occurred while identifying the plant. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>

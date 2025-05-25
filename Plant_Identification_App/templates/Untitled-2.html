@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plant Identifier</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    header {
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 36px;
+      color: #2d2d2d;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: #777;
+      margin-top: 5px;
+    }
+
+    .plant-card {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .plant-hero {
+      position: relative;
+      display: inline-block;
+    }
+
+    .plant-image {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 30px;
+      font-size: 18px;
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #4CAF50;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .plant-details {
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    .plant-details p {
+      font-size: 16px;
+      color: #333;
+      margin-top: 10px;
+    }
+
+    .plant-lifetime {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="container">
+      <header>
+        <h1>Plant Identifier</h1>
+        <p class="subtitle">Upload a leaf image to get plant details</p>
+      </header>
+
+      <div class="plant-card">
+        <div class="plant-hero">
+          <input type="file" id="imageInput" accept="image/*" @change="previewFile" hidden />
+          <label for="imageInput">
+            <img :src="previewImage || '/api/placeholder/200/200'" class="plant-image" alt="Upload preview" style="cursor: pointer;" />
+          </label>
+          <button @click="uploadImage">Identify Plant</button>
+          <div class="loading" v-if="!plantInfo">
+            <div class="spinner"></div>
+            <p>Analyzing plant...</p>
+          </div>
+          <h2 v-if="plantInfo">{{ plantInfo.common_name }}</h2>
+          <p v-if="plantInfo">{{ plantInfo.scientific_name }}</p>
+          <div class="plant-lifetime" v-if="plantInfo">
+            <span>{{ plantInfo.lifetime }}</span>
+          </div>
+        </div>
+
+        <div v-if="plantInfo" class="plant-details">
+          <p><strong>Water Requirements:</strong> {{ plantInfo.water }}</p>
+          <p><strong>Soil Type:</strong> {{ plantInfo.soil }}</p>
+          <p><strong>Light Needs:</strong> {{ plantInfo.light }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        previewImage: null,
+        plantInfo: null
+      },
+      methods: {
+        // Preview the uploaded file
+        previewFile(event) {
+          const file = event.target.files[0];
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            this.previewImage = reader.result;
+          };
+          if (file) {
+            reader.readAsDataURL(file);
+          }
+        },
+
+        // Upload the image to the backend for prediction
+        uploadImage() {
+          const formData = new FormData();
+          const fileInput = document.querySelector('input[type="file"]');
+          const file = fileInput.files[0];
+
+          if (!file) {
+            alert('Please select an image first!');
+            return;
+          }
+
+          formData.append('image', file);
+
+          // Send the image to the backend using POST
+          fetch('/predict', {
+            method: 'POST',
+            body: formData
+          })
+            .then(response => response.json())
+            .then(data => {
+              this.plantInfo = data;
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

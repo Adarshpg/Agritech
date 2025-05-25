@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Care Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* [Previous CSS remains the same] */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Plant Care Guide</h1>
+            <p class="subtitle">Your personalized plant care information</p>
+        </header>
+        
+        <div id="plant-card" class="plant-card">
+            <!-- Dynamic content will be inserted here -->
+        </div>
+    </div>
+
+</body>
+</html>
+<script>
+       function populatePlantDashboard(plantData) {
+            const plantCard = document.getElementById('plant-card');
+
+// Create dynamic HTML based on Excel data
+            plantCard.innerHTML = `
+                <div class="plant-hero">
+                    <img src="/api/placeholder/200/200" alt="${plantData['Common Name']}" class="plant-image">
+                    <h2 class="plant-name">${plantData['Common Name']}</h2>
+                    <p class="plant-scientific">${plantData['Scientific Name']}</p>
+                    <div class="plant-lifetime">
+                        <span>Lifetime: ${plantData['Lifetime'] || 'Not specified'}</span>
+                    </div>
+                </div>
+                
+                <div class="plant-details">
+                    <div class="detail-card">
+                        <div class="detail-header">
+                            <i class="fas fa-tint detail-icon"></i>
+                            <h3 class="detail-title">Water Requirements</h3>
+                        </div>
+                        <p>${plantData['Water Required Per Day'] || 'No specific information'}</p>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Water Needs</span>
+                                <span>Moderate</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-card">
+                        <div class="detail-header">
+                            <i class="fas fa-seedling detail-icon"></i>
+                            <h3 class="detail-title">Soil Type</h3>
+                        </div>
+                        <p>${plantData['Soil Types Suitable for Plant'] || 'No specific information'}</p>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Soil Moisture</span>
+                                <span>Moderate</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 50%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-card">
+                        <div class="detail-header">
+                            <i class="fas fa-sun detail-icon"></i>
+                            <h3 class="detail-title">Light Requirements</h3>
+                        </div>
+                        <p>${plantData['Temperature for Plant'] || 'No specific information'}</p>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Light Needs</span>
+                                <span>Moderate</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="care-tips">
+                    <h3 class="tips-title">Care Tips</h3>
+                    <div class="tips-grid">
+                        <div class="tip-item">
+                            <i class="fas fa-spray-can tip-icon"></i>
+                            <div>
+                                <h4>Fertilizer</h4>
+                                <p>${plantData['Nutrients / Fertilizers'] || 'No specific fertilizer information'}</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <i class="fas fa-bug tip-icon"></i>
+                            <div>
+                                <h4>Pest Control</h4>
+                                <p>${plantData['Additional Information'] || 'No specific pest control information'}</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <i class="fas fa-cut tip-icon"></i>
+                            <div>
+                                <h4>Propagation</h4>
+                                <p>${plantData['Propagation Method'] || 'No specific propagation information'}</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <i class="fas fa-temperature-low tip-icon"></i>
+                            <div>
+                                <h4>Temperature</h4>
+                                <p>${plantData['Temperature for Plant'] || 'No specific temperature information'}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cost-summary">
+                    <div class="cost-item">
+                        <div class="cost-value">Varies</div>
+                        <div class="cost-label">Monthly Maintenance</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-value">Varies</div>
+                        <div class="cost-label">Fertilizers/Month</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-value">Edible: ${plantData['Edible (Yes/No) & Edible Parts'] || 'N/A'}</div>
+                        <div class="cost-label">Edibility</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-value">${plantData['Commonly Grown Regions'] || 'N/A'}</div>
+                        <div class="cost-label">Growing Regions</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // This function would be called after prediction in the main script
+        function updatePlantDashboard(plantDetails) {
+            if (plantDetails) {
+                populatePlantDashboard(plantDetails);
+            }
+        }
+    </script>

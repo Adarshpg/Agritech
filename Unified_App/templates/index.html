@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agritech Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-light: #81C784;
+            --primary-dark: #388E3C;
+            --secondary: #FFC107;
+            --text-dark: #263238;
+            --text-light: #607D8B;
+            --white: #FFFFFF;
+            --light-bg: #F5F5F5;
+            --card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 2rem;
+            --radius: 12px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-lg);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        h1 {
+            color: var(--primary-dark);
+            margin-bottom: var(--spacing-sm);
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .app-card {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .app-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .plant-id-image {
+            background-image: url('https://images.unsplash.com/photo-1520412099551-62b6bafeb5bb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80');
+        }
+        
+        .chatbot-image {
+            background-image: url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+        }
+        
+        .app-content {
+            padding: var(--spacing-lg);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-title {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .app-description {
+            color: var(--text-light);
+            margin-bottom: var(--spacing-md);
+            flex-grow: 1;
+        }
+        
+        .app-button {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: auto;
+            width: 100%;
+        }
+        
+        .app-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .app-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: var(--spacing-lg);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .flash-messages {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .flash-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: var(--spacing-md);
+            border-radius: var(--radius);
+            margin-bottom: var(--spacing-md);
+            border-left: 4px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Agritech Hub</h1>
+            <p class="subtitle">Your one-stop solution for agricultural technology</p>
+        </header>
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+            <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        
+        <div class="app-grid">
+            <a href="/plant_identification" class="app-link">
+                <div class="app-card">
+                    <div class="app-image plant-id-image"></div>
+                    <div class="app-content">
+                        <h2 class="app-title">Plant Species Identification</h2>
+                        <p class="app-description">Upload a leaf image to identify plant species and get detailed information about the plant.</p>
+                        <button class="app-button">Launch App</button>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="/chatbot" class="app-link">
+                <div class="app-card">
+                    <div class="app-image chatbot-image"></div>
+                    <div class="app-content">
+                        <h2 class="app-title">Agriculture Chatbot</h2>
+                        <p class="app-description">Get answers to your agriculture-related questions using our AI-powered chatbot.</p>
+                        <button class="app-button">Launch App</button>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <footer>
+            <p>&copy; 2025 Agritech Hub. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
