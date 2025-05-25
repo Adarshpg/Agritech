@@ -32,8 +32,8 @@ uploads/
 pdf_uploads/
 
 # Large model files
-*.h5
+# *.h5  # Commented out to allow tracking with Git LFS
 *.hdf5
 *.pkl
 *.model
-Plant_Identification_App/backend/model/
+# Plant_Identification_App/backend/model/  # Commented out to allow tracking with Git LFS
