@@ -5,6 +5,13 @@ This repository contains multiple agricultural technology applications:
 ## 1. Plant Species Identification
 An application that allows users to upload plant images and identify plant species with detailed information.
 
+### Important Note About Model File
+The machine learning model file is not included in this repository due to size limitations. To use the Plant Identification app, you need to:
+
+1. Create a directory at `Plant_Identification_App/backend/model/` if it doesn't exist
+2. Download the model file from [this Google Drive link](https://drive.google.com/drive/folders/your-folder-id) (replace with your actual link)
+3. Place the downloaded model file in the model directory
+
 ## 2. Agricultural Chatbot
 A chatbot that answers questions about agriculture and can process PDF documents to provide information based on their content.
 
